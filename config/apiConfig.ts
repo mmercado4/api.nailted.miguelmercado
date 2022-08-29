@@ -9,4 +9,4 @@ const apiInit = () => {
   return api;
 };
 
-module.exports = { apiInit: apiInit };
+export { apiInit };
