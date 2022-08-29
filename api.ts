@@ -16,6 +16,7 @@ api.get(
   "/employees",
   (request: Request<any, any, ParsedQs>, response: Response) => {
     try {
+      //FIXME: REFACTORIZAR ESTE EMPLOYEES PARA NO REPETIR
       let employees: Array<Employee> = fs
         .readFileSync("employees.txt", "utf-8")
         .split("\n")
@@ -42,10 +43,48 @@ api.get(
 
       return response.status(200).send(employees.slice(start, end));
     } catch (error) {
-      console.error("Something went wrong: ", error);
+      console.error("Something went wrong: ", error); //TODO: Valorar si es necesario incluir alguna respuesta con success
     }
   }
 );
+
+api.get("/employees/:id", (request: Request, response: Response) => {
+  try {
+    let employees: Array<Employee> = fs
+      .readFileSync("employees.txt", "utf-8")
+      .split("\n")
+      .map((data: String) => {
+        let employee: Array<string> = data.split(",");
+        return {
+          id: parseInt(employee[0]),
+          name: employee[1],
+          surname: employee[2],
+          address: employee[3],
+          phone: employee[4],
+          email: employee[5],
+          birth: employee[6],
+        };
+      });
+
+    let { id } = request.params;
+    let search: Employee | undefined = employees.find(
+      (employee) => parseInt(id) === employee.id
+    );
+    if (search)
+      response
+        .status(200)
+        .send(JSON.stringify({ success: true, data: search }));
+    else throw new Error(`Employee ${id} does not exist`);
+  } catch (error) {
+    console.error("Something went wrong!", error);
+    response.status(400).send(
+      JSON.stringify({
+        success: false,
+        message: String(error),
+      })
+    );
+  }
+});
 
 api.listen(PORT, () =>
   console.log(`Server running at http://localhost:${PORT}/`)
