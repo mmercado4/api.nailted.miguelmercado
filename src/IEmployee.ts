@@ -5,7 +5,7 @@ interface Employee {
   address: string;
   phone: string;
   email: string;
-  birth: string;
+  birthdate: string;
 }
 
 export { Employee };
