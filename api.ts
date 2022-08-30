@@ -24,10 +24,17 @@ api.get("/employees", (request: Request, response: Response) => {
     let start: number = parseInt(query.offset as string);
     let end: number =
       parseInt(query.offset as string) + parseInt(query.limit as string);
-
-    return response.status(200).send(employees.slice(start, end));
+    let result: Array<Employee> = employees.slice(start, end);
+    if (result.length > 0)
+      return response
+        .status(200)
+        .send(JSON.stringify({ success: true, data: result }));
+    else throw new Error("Employees not found");
   } catch (error) {
-    console.error("Something went wrong: ", error); //TODO: Valorar si es necesario incluir alguna respuesta con success
+    console.error(error);
+    return response
+      .status(400)
+      .send(JSON.stringify({ success: false, message: String(error) }));
   }
 });
 
@@ -62,9 +69,9 @@ api.post("/employees", (request: Request, response: Response) => {
     let employees = fetchEmployees();
     let newId =
       employees.map((employee) => employee.id)[employees.length - 1] + 1;
-    let newEmployee: String = [newId, ...Object.values(body)].join(",");
+    let newEmployee: String = ["\r" + newId, ...Object.values(body)].join(",");
 
-    fs.appendFile("employees.txt", ("\r" + newEmployee) as string, (error) => {
+    fs.appendFile("employees.txt", newEmployee as string, (error) => {
       if (error) throw new Error("Can not save new employee");
       response.status(200).send(
         JSON.stringify({
