@@ -17,7 +17,7 @@ api.get("/employees", (request: Request, response: Response) => {
     //FIXME: REFACTORIZAR ESTE EMPLOYEES PARA NO REPETIR
     let employees: Array<Employee> = fs
       .readFileSync("employees.txt", "utf-8")
-      .split("\n")
+      .split("\r")
       .map((data: String) => {
         let employee: Array<string> = data.split(",");
         return {
@@ -49,7 +49,7 @@ api.get("/employees/:id", (request: Request, response: Response) => {
   try {
     let employees: Array<Employee> = fs
       .readFileSync("employees.txt", "utf-8")
-      .split("\n")
+      .split("\r")
       .map((data: String) => {
         let employee: Array<string> = data.split(",");
         return {
@@ -78,6 +78,51 @@ api.get("/employees/:id", (request: Request, response: Response) => {
       JSON.stringify({
         success: false,
         message: String(error),
+      })
+    );
+  }
+});
+
+api.post("/employees", (request: Request, response: Response) => {
+  let { body } = request;
+
+  let employees: Array<Employee> = fs
+    .readFileSync("employees.txt", "utf-8")
+    .split("\r")
+    .map((data: String) => {
+      let employee: Array<string> = data.split(",");
+      return {
+        id: parseInt(employee[0]),
+        name: employee[1],
+        surname: employee[2],
+        address: employee[3],
+        phone: employee[4],
+        email: employee[5],
+        birthdate: employee[6],
+      };
+    });
+
+  let newId =
+    employees.map((employee) => employee.id)[employees.length - 1] + 1;
+
+  let newEmployee: String = [newId, ...Object.values(body)].join(",");
+
+  try {
+    fs.appendFile("employees.txt", ("\r" + newEmployee) as string, (error) => {
+      if (error) throw new Error("Can not save new employee");
+      response.status(200).send(
+        JSON.stringify({
+          success: true,
+          message: "Employee saved successfully",
+        })
+      );
+    });
+  } catch (error) {
+    console.error(error);
+    response.status(400).send(
+      JSON.stringify({
+        success: false,
+        message: error,
       })
     );
   }
