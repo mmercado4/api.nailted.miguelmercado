@@ -1,4 +1,4 @@
-interface Employee {
+export interface Employee {
   id: number;
   name: string;
   surname: string;
@@ -8,4 +8,7 @@ interface Employee {
   birthdate: string;
 }
 
-export { Employee };
+export interface Pagination {
+  offset: number | string;
+  limit: number | string;
+}
