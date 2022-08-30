@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import fs from "fs";
 import { Employee } from "./src/IEmployee";
 import { ParsedQs } from "qs";
+import { fetchEmployees } from "./src/tools/fetchEmployees";
 
 const api = apiInit();
 const PORT = process.env.PORT || 3001;
@@ -14,22 +15,7 @@ interface Pagination {
 
 api.get("/employees", (request: Request, response: Response) => {
   try {
-    //FIXME: REFACTORIZAR ESTE EMPLOYEES PARA NO REPETIR
-    let employees: Array<Employee> = fs
-      .readFileSync("employees.txt", "utf-8")
-      .split("\r")
-      .map((data: String) => {
-        let employee: Array<string> = data.split(",");
-        return {
-          id: parseInt(employee[0]),
-          name: employee[1],
-          surname: employee[2],
-          address: employee[3],
-          phone: employee[4],
-          email: employee[5],
-          birthdate: employee[6],
-        };
-      });
+    let employees = fetchEmployees();
 
     let query: Pagination | string | ParsedQs | string[] | ParsedQs[] =
       Object.keys(request.query).length > 0
@@ -47,21 +33,7 @@ api.get("/employees", (request: Request, response: Response) => {
 
 api.get("/employees/:id", (request: Request, response: Response) => {
   try {
-    let employees: Array<Employee> = fs
-      .readFileSync("employees.txt", "utf-8")
-      .split("\r")
-      .map((data: String) => {
-        let employee: Array<string> = data.split(",");
-        return {
-          id: parseInt(employee[0]),
-          name: employee[1],
-          surname: employee[2],
-          address: employee[3],
-          phone: employee[4],
-          email: employee[5],
-          birthdate: employee[6],
-        };
-      });
+    let employees = fetchEmployees();
 
     let { id } = request.params;
     let search: Employee | undefined = employees.find(
@@ -86,28 +58,12 @@ api.get("/employees/:id", (request: Request, response: Response) => {
 api.post("/employees", (request: Request, response: Response) => {
   let { body } = request;
 
-  let employees: Array<Employee> = fs
-    .readFileSync("employees.txt", "utf-8")
-    .split("\r")
-    .map((data: String) => {
-      let employee: Array<string> = data.split(",");
-      return {
-        id: parseInt(employee[0]),
-        name: employee[1],
-        surname: employee[2],
-        address: employee[3],
-        phone: employee[4],
-        email: employee[5],
-        birthdate: employee[6],
-      };
-    });
-
-  let newId =
-    employees.map((employee) => employee.id)[employees.length - 1] + 1;
-
-  let newEmployee: String = [newId, ...Object.values(body)].join(",");
-
   try {
+    let employees = fetchEmployees();
+    let newId =
+      employees.map((employee) => employee.id)[employees.length - 1] + 1;
+    let newEmployee: String = [newId, ...Object.values(body)].join(",");
+
     fs.appendFile("employees.txt", ("\r" + newEmployee) as string, (error) => {
       if (error) throw new Error("Can not save new employee");
       response.status(200).send(
