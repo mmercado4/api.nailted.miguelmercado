@@ -5,7 +5,7 @@ import { Employee } from "./src/IEmployee";
 import { ParsedQs } from "qs";
 
 const api = apiInit();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 interface Pagination {
   offset: number | string;
