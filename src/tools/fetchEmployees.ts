@@ -1,5 +1,5 @@
 import fs from "fs";
-import { Employee } from "../IEmployee";
+import { Employee } from "./types";
 
 const fetchEmployees = () => {
   let employees: Array<Employee> = fs

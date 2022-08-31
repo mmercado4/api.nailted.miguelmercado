@@ -2,12 +2,11 @@ import { fetchEmployees } from "../tools/fetchEmployees";
 import { Request, Response } from "express";
 import fs from "fs";
 import { ParsedQs } from "qs";
-import { Employee } from "../IEmployee";
-import { Pagination } from "../IPagination";
+import { Employee, Pagination } from "../tools/types";
 
 exports.getEmployees = (request: Request, response: Response) => {
   try {
-    let employees = fetchEmployees();
+    let employees = fetchEmployees(); //TODO: sort and filter by email
 
     let query: Pagination | string | ParsedQs | string[] | ParsedQs[] =
       Object.keys(request.query).length > 0
