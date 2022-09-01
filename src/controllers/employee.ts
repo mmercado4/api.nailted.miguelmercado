@@ -6,16 +6,35 @@ import { Employee, Pagination } from "../tools/types";
 
 exports.getEmployees = (request: Request, response: Response) => {
   try {
-    let employees = fetchEmployees(); //TODO: sort and filter by email
+    //TODO: sort and filter by email
+    let result: Array<Employee> = fetchEmployees();
 
-    let query: Pagination | string | ParsedQs | string[] | ParsedQs[] =
-      Object.keys(request.query).length > 0
-        ? request.query
-        : { offset: 0, limit: employees.length };
-    let start: number = parseInt(query.offset as string);
+    let {
+      query,
+    }: Pagination | string | ParsedQs | string[] | ParsedQs[] | any = request;
+    let start: number = parseInt(query.offset as string) || 0;
     let end: number =
-      parseInt(query.offset as string) + parseInt(query.limit as string);
-    let result: Array<Employee> = employees.slice(start, end);
+      parseInt(query.offset as string) + parseInt(query.limit as string) ||
+      result.length;
+    if (query.hasOwnProperty("email")) {
+      result = result.filter((employee) =>
+        new RegExp(query.email as string).test(employee.email)
+      );
+    }
+
+    if (query.hasOwnProperty("sort")) {
+      let criteria: keyof Employee = query.sort;
+      let ord1 = query.orderBy === "asc" ? -1 : 1;
+      let ord2 = query.orderBy === "asc" ? 1 : -1;
+      result = result.sort((a, b) => {
+        if (a[criteria] > b[criteria]) return ord1;
+        if (a[criteria] < b[criteria]) return ord2;
+        return 0;
+      });
+    }
+
+    result = result.slice(start, end);
+
     if (result.length > 0)
       return response
         .status(200)
