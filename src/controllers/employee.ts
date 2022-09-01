@@ -6,9 +6,7 @@ import { Employee, Pagination } from "../tools/types";
 
 exports.getEmployees = (request: Request, response: Response) => {
   try {
-    //TODO: sort and filter by email
     let result: Array<Employee> = fetchEmployees();
-
     let {
       query,
     }: Pagination | string | ParsedQs | string[] | ParsedQs[] | any = request;
@@ -16,6 +14,7 @@ exports.getEmployees = (request: Request, response: Response) => {
     let end: number =
       parseInt(query.offset as string) + parseInt(query.limit as string) ||
       result.length;
+
     if (query.hasOwnProperty("email")) {
       result = result.filter((employee) =>
         new RegExp(query.email as string).test(employee.email)
@@ -51,11 +50,11 @@ exports.getEmployees = (request: Request, response: Response) => {
 exports.getEmployeeById = (request: Request, response: Response) => {
   try {
     let employees = fetchEmployees();
-
     let { id } = request.params;
     let search: Employee | undefined = employees.find(
       (employee) => parseInt(id) === employee.id
     );
+
     if (search)
       response
         .status(200)
