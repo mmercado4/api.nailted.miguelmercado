@@ -8,12 +8,6 @@ const apiInit = () => {
   api.use(express.json());
   api.use(express.urlencoded({ extended: true }));
 
-  // let corsOptions = {
-  //   origin: ["*"],
-  //   methods: ["GET", "PATCH", "PUT", "POST", "DELETE", "OPTIONS"],
-  //   allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
-  // };
-
   api.use(cors());
 
   api.use("/", routes);
