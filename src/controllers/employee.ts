@@ -17,7 +17,7 @@ exports.getEmployees = (request: Request, response: Response) => {
 
     if (query.hasOwnProperty("email")) {
       result = result.filter((employee) =>
-        new RegExp(query.email as string).test(employee.email)
+        new RegExp(query.email as string, "i").test(employee.email)
       );
     }
 
@@ -32,12 +32,16 @@ exports.getEmployees = (request: Request, response: Response) => {
       });
     }
 
+    let totalEmployees = result.length;
+
     result = result.slice(start, end);
 
     if (result.length > 0)
       return response
         .status(200)
-        .send(JSON.stringify({ success: true, data: result }));
+        .send(
+          JSON.stringify({ success: true, data: result, total: totalEmployees })
+        );
     else throw new Error("Employees not found");
   } catch (error) {
     console.error(error);
@@ -86,6 +90,7 @@ exports.insertEmployee = (request: Request, response: Response) => {
         JSON.stringify({
           success: true,
           message: "Employee saved successfully",
+          id: newId,
         })
       );
     });
