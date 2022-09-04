@@ -2,10 +2,11 @@
   "name": "api.nailted.miguelmercado",
   "version": "1.0.0",
   "description": "employees api manager",
-  "main": "api.js",
+  "main": "src/api.ts",
   "scripts": {
-    "start": "ts-node api.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node build/api.js",
+    "postinstall": "tsc",
+    "dev": "ts-node src/api.ts"
   },
   "repository": {
     "type": "git",

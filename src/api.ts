@@ -1,4 +1,4 @@
-import { apiInit } from "./src/config/apiConfig";
+import { apiInit } from "./config/apiConfig";
 
 const api = apiInit();
 const PORT = process.env.PORT || 3001;
