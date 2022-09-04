@@ -9,13 +9,11 @@ const resultIsValid = (
   let errors = validationResult(request);
   if (errors.isEmpty()) next();
   else
-    response
-      .status(403)
-      .json({
-        success: false,
-        message: "Validation failed",
-        errors: errors.mapped(),
-      });
+    response.status(403).json({
+      success: false,
+      message: "Validation failed",
+      errors: errors.array(),
+    });
 };
 
 module.exports = { resultIsValid };
