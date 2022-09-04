@@ -5,6 +5,7 @@
   "main": "src/api.ts",
   "scripts": {
     "start": "node build/api.js",
+    "build": "npx tsc",
     "postinstall": "tsc",
     "dev": "ts-node src/api.ts"
   },
