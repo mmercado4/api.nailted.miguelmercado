@@ -4,7 +4,7 @@ import { Employee } from "./types";
 const fetchEmployees = () => {
   let employees: Array<Employee> = fs
     .readFileSync("employees.txt", "utf-8")
-    .split("\r")
+    .split("\n")
     .map((data: String) => {
       let employee: Array<string> = data.split(",");
       return {
