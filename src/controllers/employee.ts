@@ -82,7 +82,7 @@ exports.insertEmployee = (request: Request, response: Response) => {
     let employees = fetchEmployees();
     let newId =
       employees.map((employee) => employee.id)[employees.length - 1] + 1;
-    let newEmployee: String = ["\r" + newId, ...Object.values(body)].join(",");
+    let newEmployee: String = ["\n" + newId, ...Object.values(body)].join(",");
 
     fs.appendFile("employees.txt", newEmployee as string, (error) => {
       if (error) throw new Error("Can not save new employee");
