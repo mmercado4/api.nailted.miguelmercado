@@ -4,10 +4,10 @@ const { validateEmployee } = require("../tools/validateEmployee");
 
 const router = express.Router();
 
-router.get("/employees", EmployeeController.getEmployees);
+router.get("/employees", EmployeeController.getAll);
 
-router.get("/employees/:id", EmployeeController.getEmployeeById);
+router.get("/employees/:id", EmployeeController.getOne);
 
-router.post("/employees", validateEmployee, EmployeeController.insertEmployee);
+router.post("/employees", validateEmployee, EmployeeController.insert);
 
 module.exports = router;
